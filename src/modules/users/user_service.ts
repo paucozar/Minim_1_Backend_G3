@@ -4,6 +4,8 @@ import User, { IUser } from '../users/user_models.js';
 export const saveMethod = () => {
     return 'Hola';
 };
+
+// Crear usuario con validaciones
 export const createUser = async (userData: IUser) => {
     // Verificar si el nombre de usuario o correo ya existen
     const existingUser = await User.findOne({
@@ -23,38 +25,50 @@ export const createUser = async (userData: IUser) => {
     return await user.save();
 };
 
-
+// Obtener usuarios (solo los visibles)
 export const getAllUsers = async (page: number = 1, pageSize: number = 10) => {
     const skip = (page - 1) * pageSize;
-    const users = await User.find().skip(skip).limit(pageSize);
-    return users.map(user => ({...user.toObject(), age: calculateAge(user.birthDate)}));
+    const users = await User.find({ isHidden: false }) // Filtramos los usuarios visibles
+                            .skip(skip)
+                            .limit(pageSize);
+    return users.map(user => ({ ...user.toObject(), age: calculateAge(user.birthDate) }));
 };
 
+// Obtener un usuario por ID
 export const getUserById = async (id: string) => {
     const user = await User.findById(id);
     if (user) {
-        return {...user.toObject(), age: calculateAge(user.birthDate)};
+        return { ...user.toObject(), age: calculateAge(user.birthDate) };
     }
     return null;
 };
 
+// Actualizar usuario
 export const updateUser = async (id: string, updateData: Partial<IUser>) => {
-    return await User.updateOne({ _id: id }, { $set: updateData });
+    return await User.findByIdAndUpdate(id, updateData, { new: true });
 };
 
+// Eliminar usuario
 export const deleteUser = async (id: string) => {
-    return await User.deleteOne({ _id: id });
+    return await User.findByIdAndDelete(id);
 };
 
+// Ocultar o mostrar usuario
 export const hideUser = async (id: string, isHidden: boolean) => {
-    return await User.updateOne({ _id: id }, { $set: { isHidden } });
-}
+    return await User.findByIdAndUpdate(id, { isHidden }, { new: true });
+};
 
+// Iniciar sesión
 export const loginUser = async (email: string, password: string) => {
     const user = await User.findOne({ email });
 
     if (!user) {
         throw new Error('Usuario no encontrado');
+    }
+
+    // Verificar si el usuario está oculto
+    if (user.isHidden) {
+        throw new Error('Este usuario está oculto y no puede iniciar sesión');
     }
 
     // Comparar la contraseña ingresada con la almacenada
@@ -65,6 +79,7 @@ export const loginUser = async (email: string, password: string) => {
     return user;
 };
 
+// Calcular edad a partir de la fecha de nacimiento
 const calculateAge = (birthDate: Date) => {
     if (!birthDate) {
         return null;
@@ -74,6 +89,7 @@ const calculateAge = (birthDate: Date) => {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
 };
 
+// Contar usuarios (solo los visibles)
 export const getUserCount = async () => {
-    return await User.countDocuments();
+    return await User.countDocuments({ isHidden: false });
 };

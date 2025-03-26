@@ -73,7 +73,6 @@ export const hideUserHandler = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const { isHidden } = req.body;
-        console.log(`Received id: ${id}`);
 
         const user = await hideUser(id, isHidden);
 
@@ -81,7 +80,10 @@ export const hideUserHandler = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        res.status(200).json({ message: `Usuario ${isHidden ? 'oculto' : 'visible'}`, user });
+        res.status(200).json({ 
+            message: `Usuario ${isHidden ? 'ocultado' : 'visible'} correctamente`, 
+            user 
+        });
     } catch (error: any) {
         res.status(500).json({ message: 'Error interno en el servidor', error });
     }
