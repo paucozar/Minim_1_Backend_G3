@@ -28,11 +28,17 @@ export const createUser = async (userData: IUser) => {
 // Obtener usuarios (solo los visibles)
 export const getAllUsers = async (page: number = 1, pageSize: number = 10) => {
     const skip = (page - 1) * pageSize;
-    const users = await User.find({ isHidden: false }) // Filtramos los usuarios visibles
+    const users = await User.find()
+                            .sort({ isHidden: 1 }) // primero los visibles
                             .skip(skip)
                             .limit(pageSize);
-    return users.map(user => ({ ...user.toObject(), age: calculateAge(user.birthDate) }));
+    const totalUsers = await User.countDocuments();
+    return {
+        users: users.map(user => ({ ...user.toObject(), age: calculateAge(user.birthDate) })),
+        totalUsers
+    };
 };
+
 
 // Obtener un usuario por ID
 export const getUserById = async (id: string) => {
