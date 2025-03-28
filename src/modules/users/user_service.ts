@@ -24,7 +24,6 @@ export const createUser = async (userData: IUser) => {
     const user = new User(userData);
     return await user.save();
 };
-
 // Obtener usuarios (solo los visibles)
 export const getAllUsers = async (page: number = 1, pageSize: number = 10) => {
     const skip = (page - 1) * pageSize;
@@ -33,10 +32,11 @@ export const getAllUsers = async (page: number = 1, pageSize: number = 10) => {
                             .skip(skip)
                             .limit(pageSize);
     const totalUsers = await User.countDocuments();
-    return {
-        users: users.map(user => ({ ...user.toObject(), age: calculateAge(user.birthDate) })),
-        totalUsers
-    };
+    //return {
+       // users: users.map(user => ({ ...user.toObject(), age: calculateAge(user.birthDate) })),
+       // totalUsers
+   // };
+   return users; 
 };
 
 

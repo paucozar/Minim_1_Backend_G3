@@ -29,22 +29,26 @@ export const getAllUsersHandler = async (req: Request, res: Response) => {
     try {
         const page = parseInt(req.query.page as string) || 1;
         const pageSize = parseInt(req.query.pageSize as string) || 10;
-        
-        if (![10,25,50].includes(pageSize)) {
+
+        if (![10, 25, 50].includes(pageSize)) {
             return res.status(400).json({ message: 'El tamaño de la lista debe ser 10, 25 o 50' });
         }
+
         const users = await getAllUsers(page, pageSize);
         const totalUsers = await getUserCount();
+
         res.status(200).json({
             users,
             totalUsers,
             totalPages: Math.ceil(totalUsers / pageSize),
-            currentPage: page
-          });
+            currentPage: page,
+        });
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        console.error('Error en getAllUsersHandler:', error);
+        res.status(500).json({ message: 'Error interno en el servidor', error });
     }
 };
+
 export const getUserByIdHandler = async (req: Request, res: Response) => {
     try {
         const data = await getUserById(req.params.id);
