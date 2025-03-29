@@ -70,13 +70,13 @@ export const hideCombatHandler = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const { isHidden } = req.body;
-
+        
         const combat = await hideCombat(id, isHidden);
-
+        
         if (!combat) {
             res.status(404).json({ message: 'Combate no encontrado' });
         }
-
+        
         res.status(200).json({ message: `Combate ${isHidden ? 'oculto' : 'visible'}`, combat });
     } catch (error: any) {
         res.status(500).json({ message: 'Error interno en el servidor', error });

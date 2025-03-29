@@ -54,4 +54,4 @@ export const getBoxersByCombatId = async (id: string) => {
 
 export const hideCombat = async (id: string, isHidden: boolean) => {
     return await Combat.updateOne({ _id: id }, { $set: { isHidden } });
-};
+};  

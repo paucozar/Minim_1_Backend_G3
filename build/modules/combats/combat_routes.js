@@ -1,6 +1,6 @@
 // src/routes/user_routes.ts
 import express from 'express';
-import { saveMethodHandler, createCombatHandler, getAllCombatsHandler, getCombatByIdHandler, updateCombatHandler, deleteCombatHandler, getBoxersByCombatIdHandler } from '../combats/combat_controller.js';
+import { createCombatHandler, getAllCombatsHandler, getCombatByIdHandler, updateCombatHandler, deleteCombatHandler, getBoxersByCombatIdHandler, hideCombatHandler } from '../combats/combat_controller.js';
 const router = express.Router();
 /**
  * @openapi
@@ -249,5 +249,5 @@ router.get('/combat/:id/boxers', getBoxersByCombatIdHandler);
  *       404:
  *         description: Combate no encontrado
  */
-router.put('/combat/:id/oculto', saveMethodHandler);
+router.put('/combat/:id/oculto', hideCombatHandler);
 export default router;

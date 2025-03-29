@@ -7,7 +7,8 @@ import {
     getCombatByIdHandler,
     updateCombatHandler,
     deleteCombatHandler,
-    getBoxersByCombatIdHandler
+    getBoxersByCombatIdHandler,
+    hideCombatHandler
 } from '../combats/combat_controller.js';
 
 const router = express.Router();
@@ -271,5 +272,5 @@ router.get('/combat/:id/boxers', getBoxersByCombatIdHandler);
  *       404:
  *         description: Combate no encontrado
  */
-router.put('/combat/:id/oculto', saveMethodHandler);
+router.put('/combat/:id/oculto', hideCombatHandler);
 export default router;
