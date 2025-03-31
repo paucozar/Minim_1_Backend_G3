@@ -30,9 +30,31 @@ export const createCombat = async (combatData: ICombat) => {
 };
 
 export const getAllCombats = async (page: number, pageSize: number) => {
-    const offset = (page - 1) * pageSize;
-    const combats = await Combat.find().skip(offset).limit(pageSize);
-    return combats;
+    try {
+        // Contar el número de registros omitidos
+        const skip = (page - 1) * pageSize;
+        
+        // Consulta de registros totales
+        const totalCombats = await Combat.countDocuments();
+        
+        // cCalcular el número total de páginas
+        const totalPages = Math.ceil(totalCombats / pageSize);
+        
+        // cObtener la página actual de registros
+        const combats = await Combat.find().skip(skip).limit(pageSize);
+        
+        // Devolución de información y registros de paginación
+        return {
+            combats,
+            totalCombats,
+            totalPages,
+            currentPage: page,
+            pageSize
+        };
+    } catch (error) {
+        console.error('Error in getAllCombats:', error);
+        throw error;
+    }
 };
 
 export const getCombatById = async (id: string) => {
