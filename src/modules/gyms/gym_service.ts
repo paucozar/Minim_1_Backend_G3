@@ -21,10 +21,20 @@ export const addGym = async (gymData: IGym) => {
     return await gym.save();
 };
 
-export const getAllGyms = async (page: number, pageSize: number) => {
-    const offset = (page - 1) * pageSize;
-    const gyms = await Gym.find().skip(offset).limit(pageSize);
-    return gyms;
+export const getAllGyms = async (page: number = 1, pageSize: number = 10) => {
+    const skip = (page - 1) * pageSize;
+    const gyms = await Gym.find()
+                           .sort({ isHidden: 1 }) 
+                           .skip(skip)
+                           .limit(pageSize);
+    const totalGyms = await Gym.countDocuments();
+    const totalPages = Math.ceil(totalGyms / pageSize);
+    return { 
+        gyms,
+        totalGyms,
+        totalPages,
+        currentPage: page
+    };
 };
 
 export const getGymById = async (id: string) => {
