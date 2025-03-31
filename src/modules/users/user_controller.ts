@@ -27,21 +27,20 @@ export const createUserHandler = async (req: Request, res: Response) => {
 };
 export const getAllUsersHandler = async (req: Request, res: Response) => {
     try {
-        const page = parseInt(req.query.page as string) || 1;
-        const pageSize = parseInt(req.query.pageSize as string) || 10;
+        const page = parseInt(req.query.page as string);
+        const pageSize = parseInt(req.query.pageSize as string);
 
         if (![10, 25, 50].includes(pageSize)) {
             return res.status(400).json({ message: 'El tamaño de la lista debe ser 10, 25 o 50' });
         }
 
-        const users = await getAllUsers(page, pageSize);
-        const totalUsers = await getUserCount();
+        const { users, totalUsers, totalPages, currentPage} = await getAllUsers(page, pageSize);
 
         res.status(200).json({
             users,
             totalUsers,
-            totalPages: Math.ceil(totalUsers / pageSize),
-            currentPage: page,
+            totalPages,
+            currentPage,
         });
     } catch (error: any) {
         console.error('Error en getAllUsersHandler:', error);

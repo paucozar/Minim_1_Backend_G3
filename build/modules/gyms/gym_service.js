@@ -23,10 +23,20 @@ export const addGym = (gymData) => __awaiter(void 0, void 0, void 0, function* (
     const gym = new Gym(gymData);
     return yield gym.save();
 });
-export const getAllGyms = (page, pageSize) => __awaiter(void 0, void 0, void 0, function* () {
-    const offset = (page - 1) * pageSize;
-    const gyms = yield Gym.find().skip(offset).limit(pageSize);
-    return gyms;
+export const getAllGyms = (page = 1, pageSize = 10) => __awaiter(void 0, void 0, void 0, function* () {
+    const skip = (page - 1) * pageSize;
+    const gyms = yield Gym.find()
+        .sort({ isHidden: 1 })
+        .skip(skip)
+        .limit(pageSize);
+    const totalGyms = yield Gym.countDocuments();
+    const totalPages = Math.ceil(totalGyms / pageSize);
+    return {
+        gyms,
+        totalGyms,
+        totalPages,
+        currentPage: page
+    };
 });
 export const getGymById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return yield Gym.findById(id);

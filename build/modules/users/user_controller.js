@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 // src/controllers/user_controller.ts
-import { saveMethod, createUser, getAllUsers, getUserById, updateUser, deleteUser, hideUser, loginUser, getUserCount } from '../users/user_service.js';
+import { saveMethod, createUser, getAllUsers, getUserById, updateUser, deleteUser, hideUser, loginUser } from '../users/user_service.js';
 export const saveMethodHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = saveMethod();
@@ -37,18 +37,17 @@ export const createUserHandler = (req, res) => __awaiter(void 0, void 0, void 0,
 });
 export const getAllUsersHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 10;
+        const page = parseInt(req.query.page);
+        const pageSize = parseInt(req.query.pageSize);
         if (![10, 25, 50].includes(pageSize)) {
             return res.status(400).json({ message: 'El tamaño de la lista debe ser 10, 25 o 50' });
         }
-        const users = yield getAllUsers(page, pageSize);
-        const totalUsers = yield getUserCount();
+        const { users, totalUsers, totalPages, currentPage } = yield getAllUsers(page, pageSize);
         res.status(200).json({
             users,
             totalUsers,
-            totalPages: Math.ceil(totalUsers / pageSize),
-            currentPage: page,
+            totalPages,
+            currentPage,
         });
     }
     catch (error) {

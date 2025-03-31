@@ -36,11 +36,13 @@ export const getAllUsers = (page = 1, pageSize = 10) => __awaiter(void 0, void 0
         .skip(skip)
         .limit(pageSize);
     const totalUsers = yield User.countDocuments();
-    //return {
-    // users: users.map(user => ({ ...user.toObject(), age: calculateAge(user.birthDate) })),
-    // totalUsers
-    // };
-    return users;
+    const totalPages = Math.ceil(totalUsers / pageSize);
+    return {
+        users,
+        totalUsers,
+        totalPages,
+        currentPage: page
+    };
 });
 // Obtener un usuario por ID
 export const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {

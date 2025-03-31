@@ -32,11 +32,13 @@ export const getAllUsers = async (page: number = 1, pageSize: number = 10) => {
                             .skip(skip)
                             .limit(pageSize);
     const totalUsers = await User.countDocuments();
-    //return {
-       // users: users.map(user => ({ ...user.toObject(), age: calculateAge(user.birthDate) })),
-       // totalUsers
-   // };
-   return users; 
+    const totalPages = Math.ceil(totalUsers / pageSize);
+    return {
+        users,
+        totalUsers,
+        totalPages,
+        currentPage: page
+   }; 
 };
 
 
