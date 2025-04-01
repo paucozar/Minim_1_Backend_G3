@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import userRoutes from './modules/users/user_routes.js'; // Nota el .js al final
 import gymRoutes from './modules/gyms/gym_routes.js'; // Nota el .js al final
 import combatRoutes from './modules/combats/combat_routes.js'; // Nota el .js al final
+import commentRoutes from './modules/comments/comment_routes.js'; // Nota el .js al final
 import { corsHandler } from './middleware/corsHandler.js';
 import { loggingHandler } from './middleware/loggingHandler.js';
 import { routeNotFound } from './middleware/routeNotFound.js';
@@ -42,6 +43,10 @@ const swaggerOptions = {
             {
                 name: 'Combat',
                 description: 'Rutas relacionadas con los combates',
+            },
+            {
+                name: 'Comments',
+                description: 'Rutas relacionadas con los comentarios',
             }
           ],
         servers: [
@@ -50,7 +55,7 @@ const swaggerOptions = {
             }
         ]
     },
-    apis: ['./modules/users/*.js', './modules/gyms/*.js', './modules/combats/*.js'] // Asegúrate de que esta ruta apunta a tus rutas
+    apis: ['./modules/users/*.js', './modules/gyms/*.js', './modules/combats/*.js', './modules/comments/*.js'] // Asegúrate de que esta ruta apunta a tus rutas
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
@@ -70,6 +75,7 @@ app.use(corsHandler);
 app.use('/api', userRoutes);
 app.use('/api', gymRoutes);
 app.use('/api', combatRoutes);
+app.use('/api', commentRoutes);
 // Rutes de prova
 app.get('/', (req, res) => {
     res.send('Welcome to my API');
